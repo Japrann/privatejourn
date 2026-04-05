@@ -42,6 +42,17 @@ export default function VaultPage() {
     }
   };
 
+  const handleMakePublic = async (id: string) => {
+    try {
+      setError(null);
+      await notesService.updateNote(id, { isPublic: true });
+      setPrivateNotes(privateNotes.filter(note => note.id !== id));
+    } catch (err) {
+      console.error('Failed to make note public:', err);
+      setError('Failed to make note public');
+    }
+  };
+
   const handleDeletePrivateNote = async (id: string) => {
     try {
       setError(null);
@@ -85,6 +96,7 @@ export default function VaultPage() {
       notes={privateNotes}
       onAddPrivateNote={handleAddPrivateNote}
       onDeletePrivateNote={handleDeletePrivateNote}
+      onMakePublic={handleMakePublic}
     />
   );
 }

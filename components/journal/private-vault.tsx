@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { Lock, Unlock, Eye, EyeOff, Shield, Key } from 'lucide-react';
+import { Lock, Unlock, Eye, EyeOff, Shield, Key, Globe } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Note } from '@/lib/types';
@@ -10,9 +10,10 @@ interface PrivateVaultProps {
   notes: Note[];
   onAddPrivateNote: (note: Omit<Note, 'id' | 'createdAt'>) => Promise<void>;
   onDeletePrivateNote: (id: string) => Promise<void>;
+  onMakePublic: (id: string) => Promise<void>; // New prop for making public
 }
 
-export function PrivateVault({ notes, onAddPrivateNote, onDeletePrivateNote }: PrivateVaultProps) {
+export function PrivateVault({ notes, onAddPrivateNote, onDeletePrivateNote, onMakePublic }: PrivateVaultProps) {
   const [isLocked, setIsLocked] = useState(true);
   const [pin, setPin] = useState('');
   const [showPin, setShowPin] = useState(false);
@@ -61,7 +62,7 @@ export function PrivateVault({ notes, onAddPrivateNote, onDeletePrivateNote }: P
       isPublic: false,
       isSpecial: false,
       isLetter: false,
-      recipient: null
+      recipient: undefined
     });
     
     setNewNote({ title: '', content: '', mood: 'calm', date: new Date().toISOString().split('T')[0] });
@@ -70,6 +71,11 @@ export function PrivateVault({ notes, onAddPrivateNote, onDeletePrivateNote }: P
 
   const handleDeleteNote = async (id: string) => {
     await onDeletePrivateNote(id);
+    setSelectedNote(null);
+  };
+
+  const handleMakePublic = async (id: string) => {
+    await onMakePublic(id);
     setSelectedNote(null);
   };
 
@@ -244,6 +250,13 @@ export function PrivateVault({ notes, onAddPrivateNote, onDeletePrivateNote }: P
                   className="border-destructive/50 text-destructive hover:bg-destructive/10"
                 >
                   delete
+                </Button>
+                <Button
+                  onClick={() => handleMakePublic(selectedNote.id)}
+                  className="bg-primary hover:bg-primary/90 text-primary-foreground"
+                >
+                  <Globe className="w-4 h-4 mr-2" />
+                  make public
                 </Button>
                 <Button
                   onClick={() => setSelectedNote(null)}
