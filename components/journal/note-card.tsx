@@ -34,10 +34,10 @@ export function NoteCard({ note, onClick, onShare, onTogglePublic }: NoteCardPro
   };
   
   return (
-    <button
+    <div
       onClick={onClick}
       className={cn(
-        "note-card w-full text-left p-5 rounded-xl",
+        "note-card w-full text-left p-5 rounded-xl cursor-pointer",
         "glass-card",
         "focus:outline-none focus:ring-2 focus:ring-ring/50",
         "animate-fade-in"
@@ -105,6 +105,6 @@ export function NoteCard({ note, onClick, onShare, onTogglePublic }: NoteCardPro
           </span>
         </div>
       </div>
-    </button>
+    </div>
   );
 }

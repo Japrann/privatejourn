@@ -21,7 +21,20 @@ export const notesService = {
         .order('created_at', { ascending: false })
 
       if (error) throw error
-      return data || []
+      
+      // Transform database field names back to frontend format
+      return (data || []).map(note => ({
+        id: note.id,
+        title: note.title,
+        content: note.content,
+        mood: note.mood,
+        date: note.date,
+        isSpecial: note.is_special,
+        isLetter: note.is_letter,
+        recipient: note.recipient,
+        isPublic: note.is_public,
+        createdAt: note.created_at,
+      }))
     } catch (error) {
       console.error('Error fetching notes:', error)
       throw error
@@ -35,9 +48,17 @@ export const notesService = {
     }
     
     try {
+      // Transform frontend field names to database format
       const newNote = {
-        ...note,
         id: Date.now().toString(),
+        title: note.title || '',
+        content: note.content || '',
+        mood: note.mood || 'calm',
+        date: note.date || new Date().toISOString().split('T')[0],
+        is_special: Boolean(note.isSpecial),
+        is_letter: Boolean(note.isLetter),
+        recipient: note.recipient || null,
+        is_public: Boolean(note.isPublic),
         created_at: new Date().toISOString(),
       }
 
@@ -47,7 +68,10 @@ export const notesService = {
         .select()
         .single()
 
-      if (error) throw error
+      if (error) {
+        console.error('❌ Supabase error:', error.message);
+        throw error
+      }
       
       // Transform database field names back to frontend format
       return {
@@ -63,7 +87,7 @@ export const notesService = {
         createdAt: data.created_at,
       }
     } catch (error) {
-      console.error('Error creating note:', error)
+      console.error('❌ Error creating note:', error)
       throw error
     }
   },
