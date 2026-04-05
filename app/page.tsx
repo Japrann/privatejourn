@@ -124,9 +124,12 @@ export default function JournalApp() {
     document.documentElement.setAttribute('data-accent', settings.accentColor);
   }, [settings.accentColor]);
 
-  // Filter notes based on search and mood
+  // Filter notes based on search and mood - EXCLUDE private notes from main view
   const filteredNotes = useMemo(() => {
     return notes.filter((note) => {
+      // Exclude private notes from main journal view
+      if (!note.isPublic) return false;
+      
       const matchesSearch = searchQuery === '' || 
         note.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
         note.content.toLowerCase().includes(searchQuery.toLowerCase());

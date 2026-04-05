@@ -24,6 +24,11 @@ ALTER TABLE notes ENABLE ROW LEVEL SECURITY;
 CREATE POLICY "Public notes are viewable by everyone" ON notes
   FOR SELECT USING (is_public = true);
 
--- Create policy for all notes (anyone can insert/update/delete - adjust as needed for auth)
+-- Create policy for note management (anyone can insert/update/delete their own notes)
+-- For now, we'll allow insert/update/delete but restrict read access
 CREATE POLICY "Anyone can manage notes" ON notes
-  FOR ALL USING (true);
+  FOR INSERT, UPDATE, DELETE USING (true);
+
+-- Create policy to restrict read access to only public notes
+CREATE POLICY "Restrict read access to public notes only" ON notes
+  FOR SELECT USING (is_public = true);

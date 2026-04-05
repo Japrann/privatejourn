@@ -8,16 +8,19 @@ import { Button } from '@/components/ui/button';
 import { Sparkles, Globe, Lock } from 'lucide-react';
 
 interface NoteFormProps {
-  onSave: (note: { title: string; content: string; mood: Mood; date: string; isPublic?: boolean }) => void;
+  onSave: (note: { title: string; content: string; mood: Mood; date: string; isPublic?: boolean }) => Promise<void>;
+  onCancel?: () => void;
+  initialNote?: Note;
+  isPrivate?: boolean;
   isSpecial?: boolean;
 }
 
-export function NoteForm({ onSave, isSpecial = false }: NoteFormProps) {
-  const [title, setTitle] = useState('');
-  const [content, setContent] = useState('');
-  const [mood, setMood] = useState<Mood>('calm');
-  const [date, setDate] = useState(new Date().toISOString().split('T')[0]);
-  const [isPublic, setIsPublic] = useState(false);
+export function NoteForm({ onSave, onCancel, initialNote, isPrivate = false, isSpecial = false }: NoteFormProps) {
+  const [title, setTitle] = useState(initialNote?.title ?? '');
+  const [content, setContent] = useState(initialNote?.content ?? '');
+  const [mood, setMood] = useState<Mood>(initialNote?.mood ?? 'calm');
+  const [date, setDate] = useState(initialNote?.date ?? new Date().toISOString().split('T')[0]);
+  const [isPublic, setIsPublic] = useState(initialNote?.isPublic ?? false);
   
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();

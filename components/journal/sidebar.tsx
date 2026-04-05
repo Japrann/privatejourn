@@ -1,6 +1,18 @@
 'use client';
 
-import { BookOpen, PenLine, Filter, Heart, Lock, Ghost, Mail, Clock, Sparkles, Settings } from 'lucide-react';
+import { 
+  Home, 
+  Search, 
+  Plus, 
+  Heart, 
+  Moon, 
+  Brain, 
+  MessageCircle, 
+  Sparkles, 
+  Settings, 
+  Lock, 
+  Shield
+} from 'lucide-react';
 import { cn } from '@/lib/utils';
 
 type View = 'all' | 'new' | 'filter' | 'special' | 'lock' | 'vanish' | 'letter' | 'timeline' | 'settings';
@@ -101,6 +113,20 @@ export function Sidebar({ currentView, onViewChange, isOpen, onClose, journalNam
         
         {/* Bottom actions */}
         <div className="p-4 border-t border-border/30 space-y-2">
+          <button
+            onClick={() => {
+              window.location.href = '/vault';
+              onClose();
+            }}
+            className={cn(
+              "w-full flex items-center gap-3 px-4 py-3 rounded-xl",
+              "text-sm font-medium transition-all duration-200",
+              "text-destructive hover:text-destructive hover:bg-destructive/10 border border-destructive/20"
+            )}
+          >
+            <Shield className="size-5" />
+            Private Vault
+          </button>
           <button
             onClick={() => {
               onViewChange('settings');
