@@ -11,6 +11,26 @@ interface AmbientAtmosphereProps {
 export function AmbientAtmosphere({ mode, currentMood }: AmbientAtmosphereProps) {
   const [particles, setParticles] = useState<Array<{ id: number; x: number; y: number; size: number }>>([]);
 
+  // Add custom animation
+  useEffect(() => {
+    const style = document.createElement('style');
+    style.textContent = `
+      @keyframes float {
+        0%, 100% { transform: translateY(0px) translateX(0px); }
+        25% { transform: translateY(-20px) translateX(10px); }
+        50% { transform: translateY(10px) translateX(-10px); }
+        75% { transform: translateY(-15px) translateX(5px); }
+      }
+    `;
+    document.head.appendChild(style);
+    
+    return () => {
+      if (style.parentNode) {
+        document.head.removeChild(style);
+      }
+    };
+  }, []);
+
   useEffect(() => {
     if (mode === 'none') return;
     
@@ -111,23 +131,3 @@ export function AmbientAtmosphere({ mode, currentMood }: AmbientAtmosphereProps)
     </div>
   );
 }
-
-// Add custom animation
-useEffect(() => {
-  const style = document.createElement('style');
-  style.textContent = `
-    @keyframes float {
-      0%, 100% { transform: translateY(0px) translateX(0px); }
-      25% { transform: translateY(-20px) translateX(10px); }
-      50% { transform: translateY(10px) translateX(-10px); }
-      75% { transform: translateY(-15px) translateX(5px); }
-    }
-  `;
-  document.head.appendChild(style);
-  
-  return () => {
-    if (style.parentNode) {
-      document.head.removeChild(style);
-    }
-  };
-}, []);
