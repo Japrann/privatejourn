@@ -11,7 +11,13 @@ import {
   Sparkles, 
   Settings, 
   Lock, 
-  Shield
+  Shield,
+  BookOpen,
+  Clock,
+  PenTool,
+  Mail,
+  Ghost,
+  Filter
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
@@ -29,11 +35,11 @@ interface SidebarProps {
 const navItems: { id: View; label: string; icon: React.ReactNode }[] = [
   { id: 'all', label: 'All Notes', icon: <BookOpen className="size-5" /> },
   { id: 'timeline', label: 'Timeline', icon: <Clock className="size-5" /> },
-  { id: 'new', label: 'New Entry', icon: <PenLine className="size-5" /> },
+  { id: 'new', label: 'New Entry', icon: <PenTool className="size-5" /> },
   { id: 'letter', label: 'Write a Letter', icon: <Mail className="size-5" /> },
-  { id: 'vanish', label: 'Write & Let Go', icon: <Ghost className="size-5" /> },
-  { id: 'filter', label: 'Mood Filter', icon: <Filter className="size-5" /> },
-  { id: 'special', label: 'Special Note', icon: <Heart className="size-5" /> },
+  { id: 'special', label: 'Special Note', icon: <Sparkles className="size-5" /> },
+  { id: 'vanish', label: 'Vanishing Text', icon: <Ghost className="size-5" /> },
+  { id: 'filter', label: 'Filter by Mood', icon: <Filter className="size-5" /> },
 ];
 
 export function Sidebar({ currentView, onViewChange, isOpen, onClose, journalName, onRandomMemory }: SidebarProps) {
