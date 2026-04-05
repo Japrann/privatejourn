@@ -16,6 +16,8 @@ import { RandomMemory } from '@/components/journal/random-memory';
 import { TimelineView } from '@/components/journal/timeline-view';
 import { FeedbackToast } from '@/components/journal/feedback-toast';
 import { SettingsPanel } from '@/components/journal/settings-panel';
+import { MoodAtmosphere } from '@/components/journal/mood-atmosphere';
+import { AmbientSounds } from '@/components/journal/ambient-sounds';
 import { Note, Mood, JournalSettings, getRandomFeedback, feedbackMessages } from '@/lib/types';
 import { notesService } from '@/lib/db';
 import { cn } from '@/lib/utils';
@@ -307,6 +309,9 @@ export default function JournalApp() {
       className="min-h-screen bg-background flex"
       data-accent={settings.accentColor}
     >
+      {/* Mood-based atmosphere */}
+      <MoodAtmosphere currentMood={moodFilter || undefined} {...(settings.ambientMode && { mode: settings.ambientMode })} />
+      
       {/* Ambient rain overlay */}
       {settings.ambientMode === 'rain' && <div className="rain-overlay" />}
       
@@ -500,6 +505,9 @@ export default function JournalApp() {
           onDone={() => setFeedbackMessage(null)}
         />
       )}
+      
+      {/* Ambient Sounds */}
+      <AmbientSounds />
     </div>
   );
 }

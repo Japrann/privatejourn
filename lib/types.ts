@@ -2,7 +2,7 @@ export type Mood = 'happy' | 'tired' | 'overthinking' | 'missing' | 'calm';
 
 export type AccentColor = 'purple' | 'blue' | 'pink';
 
-export type AmbientMode = 'none' | 'rain' | 'night' | 'silence';
+export type AmbientMode = 'none' | 'rain' | 'night' | 'silence' | 'particles' | 'mood' | 'full';
 
 export interface Note {
   id: string;
