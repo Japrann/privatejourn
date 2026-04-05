@@ -1,14 +1,16 @@
+'use client'
+
 import { AlertCircle, Home } from "lucide-react"
 import Link from "next/link"
 import { Button } from "@/components/ui/button"
-import { useEffect } from 'react'
+import { useEffect, use } from 'react'
 
-export default async function Page({
+export default function Page({
   searchParams,
 }: {
   searchParams: Promise<{ error?: string }>
 }) {
-  const params = await searchParams
+  const params = use(searchParams)
 
   // Auto-redirect to main journal after 3 seconds
   useEffect(() => {
