@@ -113,13 +113,21 @@ export function AmbientAtmosphere({ mode, currentMood }: AmbientAtmosphereProps)
 }
 
 // Add custom animation
-const style = document.createElement('style');
-style.textContent = `
-  @keyframes float {
-    0%, 100% { transform: translateY(0px) translateX(0px); }
-    25% { transform: translateY(-20px) translateX(10px); }
-    50% { transform: translateY(10px) translateX(-10px); }
-    75% { transform: translateY(-15px) translateX(5px); }
-  }
-`;
-document.head.appendChild(style);
+useEffect(() => {
+  const style = document.createElement('style');
+  style.textContent = `
+    @keyframes float {
+      0%, 100% { transform: translateY(0px) translateX(0px); }
+      25% { transform: translateY(-20px) translateX(10px); }
+      50% { transform: translateY(10px) translateX(-10px); }
+      75% { transform: translateY(-15px) translateX(5px); }
+    }
+  `;
+  document.head.appendChild(style);
+  
+  return () => {
+    if (style.parentNode) {
+      document.head.removeChild(style);
+    }
+  };
+}, []);

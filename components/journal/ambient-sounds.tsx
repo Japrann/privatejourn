@@ -7,6 +7,9 @@ export function AmbientSounds() {
   const [volume, setVolume] = useState(0.3);
 
   useEffect(() => {
+    // Check if we're in browser environment
+    if (typeof window === 'undefined') return;
+
     // Create ambient sounds using Web Audio API
     const audioContext = new (window.AudioContext || (window as any).webkitAudioContext)();
     
@@ -75,6 +78,11 @@ export function AmbientSounds() {
       }
     };
   }, [isPlaying, volume]);
+
+  // Don't render on server
+  if (typeof window === 'undefined') {
+    return null;
+  }
 
   return (
     <div className="fixed bottom-4 right-4 z-50 flex items-center gap-2">
