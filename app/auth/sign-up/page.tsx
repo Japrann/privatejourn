@@ -1,12 +1,10 @@
 'use client'
 
-import { createClient } from '@/lib/supabase/client'
+import { useState, useEffect } from 'react'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import Link from 'next/link'
-import { useRouter } from 'next/navigation'
-import { useState } from 'react'
 import { Feather, Eye, EyeOff } from 'lucide-react'
 
 export default function Page() {
@@ -16,43 +14,25 @@ export default function Page() {
   const [showPassword, setShowPassword] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [isLoading, setIsLoading] = useState(false)
-  const router = useRouter()
+
+  // Auto-redirect to main journal after 3 seconds
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      window.location.href = '/'
+    }, 3000)
+    
+    return () => clearTimeout(timer)
+  }, [])
 
   const handleSignUp = async (e: React.FormEvent) => {
     e.preventDefault()
-    const supabase = createClient()
     setIsLoading(true)
     setError(null)
 
-    if (password !== repeatPassword) {
-      setError('passwords don\'t match')
-      setIsLoading(false)
-      return
-    }
-
-    if (password.length < 6) {
-      setError('password must be at least 6 characters')
-      setIsLoading(false)
-      return
-    }
-
-    try {
-      const { error } = await supabase.auth.signUp({
-        email,
-        password,
-        options: {
-          emailRedirectTo:
-            process.env.NEXT_PUBLIC_DEV_SUPABASE_REDIRECT_URL ||
-            `${window.location.origin}/`,
-        },
-      })
-      if (error) throw error
-      router.push('/auth/sign-up-success')
-    } catch (error: unknown) {
-      setError(error instanceof Error ? error.message : 'something went wrong...')
-    } finally {
-      setIsLoading(false)
-    }
+    // Simulate account creation and redirect
+    setTimeout(() => {
+      window.location.href = '/auth/sign-up-success'
+    }, 1000)
   }
 
   return (

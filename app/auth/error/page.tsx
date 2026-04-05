@@ -1,6 +1,7 @@
 import { AlertCircle, Home } from "lucide-react"
 import Link from "next/link"
 import { Button } from "@/components/ui/button"
+import { useEffect } from 'react'
 
 export default async function Page({
   searchParams,
@@ -8,6 +9,15 @@ export default async function Page({
   searchParams: Promise<{ error?: string }>
 }) {
   const params = await searchParams
+
+  // Auto-redirect to main journal after 3 seconds
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      window.location.href = '/'
+    }, 3000)
+    
+    return () => clearTimeout(timer)
+  }, [])
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-background p-4">
@@ -17,13 +27,9 @@ export default async function Page({
             <div className="w-16 h-16 rounded-full bg-destructive/20 flex items-center justify-center mb-4">
               <AlertCircle className="w-8 h-8 text-destructive" />
             </div>
-            <h1 className="font-serif text-3xl text-foreground">journal error</h1>
+            <h1 className="font-serif text-3xl text-foreground">redirecting to journal...</h1>
             <p className="text-muted-foreground mt-4 leading-relaxed">
-              {params?.error ? (
-                <>{params.error}</>
-              ) : (
-                <>something went wrong. please return to your journal.</>
-              )}
+              Taking you to your personal space in a moment...
             </p>
           </div>
           
@@ -31,7 +37,7 @@ export default async function Page({
             <Link href="/">
               <Button className="w-full bg-primary hover:bg-primary/90 text-primary-foreground">
                 <Home className="w-4 h-4 mr-2" />
-                back to journal
+                go to journal now
               </Button>
             </Link>
           </div>

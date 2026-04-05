@@ -1,8 +1,20 @@
+'use client'
+
+import { useEffect } from 'react'
 import { Feather, Mail } from "lucide-react"
-import Link from "next/link"
+import Link from 'next/link'
 import { Button } from "@/components/ui/button"
 
 export default function Page() {
+  // Auto-redirect to main journal after 3 seconds
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      window.location.href = '/'
+    }, 3000)
+    
+    return () => clearTimeout(timer)
+  }, [])
+
   return (
     <div className="min-h-screen flex items-center justify-center bg-background p-4">
       <div className="w-full max-w-md">
