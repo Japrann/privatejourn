@@ -10,9 +10,17 @@ interface AmbientAtmosphereProps {
 
 export function AmbientAtmosphere({ mode, currentMood }: AmbientAtmosphereProps) {
   const [particles, setParticles] = useState<Array<{ id: number; x: number; y: number; size: number }>>([]);
+  const [isClient, setIsClient] = useState(false);
 
-  // Add custom animation
+  // Prevent hydration mismatch
   useEffect(() => {
+    setIsClient(true);
+  }, []);
+
+  // Add custom animation only on client
+  useEffect(() => {
+    if (!isClient) return;
+    
     const style = document.createElement('style');
     style.textContent = `
       @keyframes float {
@@ -29,10 +37,10 @@ export function AmbientAtmosphere({ mode, currentMood }: AmbientAtmosphereProps)
         document.head.removeChild(style);
       }
     };
-  }, []);
+  }, [isClient]);
 
   useEffect(() => {
-    if (mode === 'none') return;
+    if (!isClient || mode === 'none') return;
     
     // Generate floating particles
     const generateParticles = () => {
@@ -48,7 +56,12 @@ export function AmbientAtmosphere({ mode, currentMood }: AmbientAtmosphereProps)
     generateParticles();
     const interval = setInterval(generateParticles, 10000);
     return () => clearInterval(interval);
-  }, [mode]);
+  }, [mode, isClient]);
+
+  // Don't render on server to prevent hydration mismatch
+  if (!isClient) {
+    return null;
+  }
 
   if (mode === 'none') return null;
 

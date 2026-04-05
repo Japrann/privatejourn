@@ -5,10 +5,16 @@ import { useEffect, useState } from 'react';
 export function AmbientSounds() {
   const [isPlaying, setIsPlaying] = useState(false);
   const [volume, setVolume] = useState(0.3);
+  const [isClient, setIsClient] = useState(false);
+
+  // Prevent hydration mismatch
+  useEffect(() => {
+    setIsClient(true);
+  }, []);
 
   useEffect(() => {
     // Check if we're in browser environment
-    if (typeof window === 'undefined') return;
+    if (!isClient || typeof window === 'undefined') return;
 
     // Create ambient sounds using Web Audio API
     const audioContext = new (window.AudioContext || (window as any).webkitAudioContext)();
@@ -77,10 +83,10 @@ export function AmbientSounds() {
         });
       }
     };
-  }, [isPlaying, volume]);
+  }, [isClient, isPlaying, volume]);
 
-  // Don't render on server
-  if (typeof window === 'undefined') {
+  // Don't render on server to prevent hydration mismatch
+  if (!isClient) {
     return null;
   }
 
