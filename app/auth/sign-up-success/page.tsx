@@ -11,11 +11,11 @@ export default function Page() {
             <div className="w-16 h-16 rounded-full bg-primary/20 flex items-center justify-center mb-4 glow-effect animate-soft-pulse">
               <Mail className="w-8 h-8 text-primary" />
             </div>
-            <h1 className="font-serif text-3xl text-foreground">check your inbox</h1>
+            <h1 className="font-serif text-3xl text-foreground">journal created</h1>
             <p className="text-muted-foreground mt-4 leading-relaxed">
-              we&apos;ve sent you a confirmation email.
+              your personal space is ready for your thoughts.
               <br />
-              click the link to unlock your journal.
+              click below to begin writing.
             </p>
           </div>
 
@@ -37,7 +37,7 @@ export default function Page() {
 
         <div className="flex items-center justify-center gap-2 mt-8 text-muted-foreground/50">
           <Feather className="w-4 h-4" />
-          <span className="text-xs">your quiet place awaits</span>
+          <span className="text-xs">your quiet place awaits your thoughts</span>
         </div>
       </div>
     </div>

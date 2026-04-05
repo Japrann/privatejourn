@@ -46,8 +46,8 @@ export default function Page() {
             <div className="w-16 h-16 rounded-full bg-primary/20 flex items-center justify-center mb-4 glow-effect">
               <Feather className="w-8 h-8 text-primary" />
             </div>
-            <h1 className="font-serif text-3xl text-foreground">welcome back</h1>
-            <p className="text-muted-foreground mt-2">your thoughts are waiting</p>
+            <h1 className="font-serif text-3xl text-foreground">welcome to your journal</h1>
+            <p className="text-muted-foreground mt-2">your personal space for thoughts and feelings</p>
           </div>
 
           <form onSubmit={handleLogin} className="space-y-6">
@@ -101,7 +101,7 @@ export default function Page() {
               className="w-full bg-primary hover:bg-primary/90 text-primary-foreground glow-effect"
               disabled={isLoading}
             >
-              {isLoading ? 'entering...' : 'enter your journal'}
+              {isLoading ? 'opening journal...' : 'enter journal'}
             </Button>
           </form>
 
@@ -113,9 +113,9 @@ export default function Page() {
           </p>
         </div>
 
-        <p className="text-center text-muted-foreground/50 text-xs mt-8">
-          this is where you say things you can&apos;t say out loud
-        </p>
+        <p className="text-center text-muted-foreground text-sm mt-8">
+            this is your private space to express yourself freely
+          </p>
       </div>
     </div>
   )

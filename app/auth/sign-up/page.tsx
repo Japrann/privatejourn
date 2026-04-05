@@ -63,8 +63,8 @@ export default function Page() {
             <div className="w-16 h-16 rounded-full bg-primary/20 flex items-center justify-center mb-4 glow-effect">
               <Feather className="w-8 h-8 text-primary" />
             </div>
-            <h1 className="font-serif text-3xl text-foreground">create your space</h1>
-            <p className="text-muted-foreground mt-2">a safe place for your thoughts</p>
+            <h1 className="font-serif text-3xl text-foreground">create your journal space</h1>
+            <p className="text-muted-foreground mt-2">your personal corner for thoughts and memories</p>
           </div>
 
           <form onSubmit={handleSignUp} className="space-y-6">
@@ -133,7 +133,7 @@ export default function Page() {
               className="w-full bg-primary hover:bg-primary/90 text-primary-foreground glow-effect"
               disabled={isLoading}
             >
-              {isLoading ? 'creating...' : 'begin your journey'}
+              {isLoading ? 'creating space...' : 'begin journaling'}
             </Button>
           </form>
 
