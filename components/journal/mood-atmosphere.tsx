@@ -5,9 +5,10 @@ import { moodConfig } from '@/lib/types';
 
 interface MoodAtmosphereProps {
   currentMood?: string;
+  mode?: 'none' | 'rain' | 'night' | 'silence' | 'particles' | 'mood' | 'full';
 }
 
-export function MoodAtmosphere({ currentMood }: MoodAtmosphereProps) {
+export function MoodAtmosphere({ currentMood, mode }: MoodAtmosphereProps) {
   const [moodColors, setMoodColors] = useState({
     happy: 'from-yellow-400/20 via-orange-300/10 to-pink-400/20',
     tired: 'from-blue-400/20 via-indigo-300/10 to-purple-400/20',

@@ -310,7 +310,7 @@ export default function JournalApp() {
       data-accent={settings.accentColor}
     >
       {/* Mood-based atmosphere */}
-      <MoodAtmosphere currentMood={moodFilter || undefined} {...(settings.ambientMode && { mode: settings.ambientMode })} />
+      <MoodAtmosphere currentMood={moodFilter || undefined} />
       
       {/* Ambient rain overlay */}
       {settings.ambientMode === 'rain' && <div className="rain-overlay" />}
