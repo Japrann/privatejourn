@@ -39,6 +39,7 @@ export function AmbientAtmosphere({ mode, currentMood }: AmbientAtmosphereProps)
     };
   }, [isClient]);
 
+  // Generate particles based on mode
   useEffect(() => {
     if (!isClient || mode === 'none') return;
     
@@ -56,7 +57,7 @@ export function AmbientAtmosphere({ mode, currentMood }: AmbientAtmosphereProps)
     generateParticles();
     const interval = setInterval(generateParticles, 10000);
     return () => clearInterval(interval);
-  }, [mode, isClient]);
+  }, [isClient, mode]);
 
   // Don't render on server to prevent hydration mismatch
   if (!isClient) {

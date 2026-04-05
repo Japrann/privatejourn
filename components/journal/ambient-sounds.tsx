@@ -1,89 +1,87 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
 
 export function AmbientSounds() {
   const [isPlaying, setIsPlaying] = useState(false);
   const [volume, setVolume] = useState(0.3);
   const [isClient, setIsClient] = useState(false);
+  const audioContextRef = useRef<any>(null);
+  const soundNodesRef = useRef<any[]>([]);
 
   // Prevent hydration mismatch
   useEffect(() => {
     setIsClient(true);
   }, []);
 
+  // Initialize audio context only once when client is ready
   useEffect(() => {
-    // Check if we're in browser environment
     if (!isClient || typeof window === 'undefined') return;
-
-    // Create ambient sounds using Web Audio API
-    const audioContext = new (window.AudioContext || (window as any).webkitAudioContext)();
     
-    // Create ambient sound generator
-    const createAmbientSound = () => {
-      const oscillator = audioContext.createOscillator();
-      const gainNode = audioContext.createGain();
-      
-      oscillator.type = 'sine';
-      oscillator.frequency.setValueAtTime(220, audioContext.currentTime); // A3 note
-      gainNode.gain.setValueAtTime(volume * 0.1, audioContext.currentTime);
-      
-      oscillator.connect(gainNode);
-      gainNode.connect(audioContext.destination);
-      
-      return { oscillator, gainNode };
-    };
+    if (!audioContextRef.current) {
+      audioContextRef.current = new (window.AudioContext || (window as any).webkitAudioContext)();
+    }
+  }, [isClient]);
 
-    let soundNodes: any[] = [];
+  // Handle playing state changes
+  useEffect(() => {
+    if (!isClient || !audioContextRef.current) return;
+
+    if (isPlaying) {
+      // Start ambient sounds
+      const frequencies = [220, 277.18, 329.63, 440]; // A minor chord
+      soundNodesRef.current = frequencies.map(freq => {
+        const osc = audioContextRef.current.createOscillator();
+        const gain = audioContextRef.current.createGain();
+        
+        osc.type = 'sine';
+        osc.frequency.setValueAtTime(freq, audioContextRef.current.currentTime);
+        gain.gain.setValueAtTime(volume * 0.05, audioContextRef.current.currentTime);
+        
+        osc.connect(gain);
+        gain.connect(audioContextRef.current.destination);
+        osc.start();
+        
+        return { oscillator: osc, gainNode: gain };
+      });
+    } else {
+      // Stop all sounds
+      soundNodesRef.current.forEach(({ oscillator, gainNode }) => {
+        gainNode.gain.exponentialRampToValueAtTime(0.001, audioContextRef.current.currentTime + 0.5);
+        oscillator.stop(audioContextRef.current.currentTime + 0.5);
+      });
+      soundNodesRef.current = [];
+    }
+  }, [isClient, isPlaying, volume]);
+
+  // Handle keyboard shortcuts
+  useEffect(() => {
+    if (!isClient) return;
     
-    const toggleAmbient = () => {
-      if (isPlaying) {
-        // Stop all sounds
-        soundNodes.forEach(({ oscillator, gainNode }) => {
-          gainNode.gain.exponentialRampToValueAtTime(0.001, audioContext.currentTime + 0.5);
-          oscillator.stop(audioContext.currentTime + 0.5);
-        });
-        soundNodes = [];
-      } else {
-        // Start ambient sounds
-        const frequencies = [220, 277.18, 329.63, 440]; // A minor chord
-        soundNodes = frequencies.map(freq => {
-          const osc = audioContext.createOscillator();
-          const gain = audioContext.createGain();
-          
-          osc.type = 'sine';
-          osc.frequency.setValueAtTime(freq, audioContext.currentTime);
-          gain.gain.setValueAtTime(volume * 0.05, audioContext.currentTime);
-          
-          osc.connect(gain);
-          gain.connect(audioContext.destination);
-          osc.start();
-          
-          return { oscillator: osc, gainNode: gain };
-        });
-      }
-      setIsPlaying(!isPlaying);
-    };
-
-    // Add keyboard shortcut for ambient sounds
     const handleKeyPress = (e: KeyboardEvent) => {
       if (e.key === 'a' && e.ctrlKey) {
         e.preventDefault();
-        toggleAmbient();
+        setIsPlaying(!isPlaying);
       }
     };
 
     window.addEventListener('keypress', handleKeyPress);
     return () => {
       window.removeEventListener('keypress', handleKeyPress);
-      if (soundNodes.length > 0) {
-        soundNodes.forEach(({ oscillator, gainNode }) => {
-          gainNode.gain.exponentialRampToValueAtTime(0.001, audioContext.currentTime + 0.5);
-          oscillator.stop(audioContext.currentTime + 0.5);
+    };
+  }, [isClient, isPlaying]);
+
+  // Cleanup on unmount
+  useEffect(() => {
+    return () => {
+      if (audioContextRef.current && soundNodesRef.current.length > 0) {
+        soundNodesRef.current.forEach(({ oscillator, gainNode }) => {
+          gainNode.gain.exponentialRampToValueAtTime(0.001, audioContextRef.current.currentTime + 0.5);
+          oscillator.stop(audioContextRef.current.currentTime + 0.5);
         });
       }
     };
-  }, [isClient, isPlaying, volume]);
+  }, []);
 
   // Don't render on server to prevent hydration mismatch
   if (!isClient) {
