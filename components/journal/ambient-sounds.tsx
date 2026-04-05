@@ -19,7 +19,11 @@ export function AmbientSounds() {
     if (!isClient || typeof window === 'undefined') return;
     
     if (!audioContextRef.current) {
-      audioContextRef.current = new (window.AudioContext || (window as any).webkitAudioContext)();
+      try {
+        audioContextRef.current = new (window.AudioContext || (window as any).webkitAudioContext)();
+      } catch (error) {
+        console.warn('Audio context not available:', error);
+      }
     }
   }, [isClient]);
 
@@ -27,30 +31,38 @@ export function AmbientSounds() {
   useEffect(() => {
     if (!isClient || !audioContextRef.current) return;
 
-    if (isPlaying) {
-      // Start ambient sounds
-      const frequencies = [220, 277.18, 329.63, 440]; // A minor chord
-      soundNodesRef.current = frequencies.map(freq => {
-        const osc = audioContextRef.current.createOscillator();
-        const gain = audioContextRef.current.createGain();
-        
-        osc.type = 'sine';
-        osc.frequency.setValueAtTime(freq, audioContextRef.current.currentTime);
-        gain.gain.setValueAtTime(volume * 0.05, audioContextRef.current.currentTime);
-        
-        osc.connect(gain);
-        gain.connect(audioContextRef.current.destination);
-        osc.start();
-        
-        return { oscillator: osc, gainNode: gain };
-      });
-    } else {
-      // Stop all sounds
-      soundNodesRef.current.forEach(({ oscillator, gainNode }) => {
-        gainNode.gain.exponentialRampToValueAtTime(0.001, audioContextRef.current.currentTime + 0.5);
-        oscillator.stop(audioContextRef.current.currentTime + 0.5);
-      });
-      soundNodesRef.current = [];
+    try {
+      if (isPlaying) {
+        // Start ambient sounds
+        const frequencies = [220, 277.18, 329.63, 440]; // A minor chord
+        soundNodesRef.current = frequencies.map(freq => {
+          const osc = audioContextRef.current.createOscillator();
+          const gain = audioContextRef.current.createGain();
+          
+          osc.type = 'sine';
+          osc.frequency.setValueAtTime(freq, audioContextRef.current.currentTime);
+          gain.gain.setValueAtTime(volume * 0.05, audioContextRef.current.currentTime);
+          
+          osc.connect(gain);
+          gain.connect(audioContextRef.current.destination);
+          osc.start();
+          
+          return { oscillator: osc, gainNode: gain };
+        });
+      } else {
+        // Stop all sounds
+        soundNodesRef.current.forEach(({ oscillator, gainNode }) => {
+          try {
+            gainNode.gain.exponentialRampToValueAtTime(0.001, audioContextRef.current.currentTime + 0.5);
+            oscillator.stop(audioContextRef.current.currentTime + 0.5);
+          } catch (error) {
+            // Ignore errors for stopped oscillators
+          }
+        });
+        soundNodesRef.current = [];
+      }
+    } catch (error) {
+      console.warn('Audio playback error:', error);
     }
   }, [isClient, isPlaying, volume]);
 
@@ -76,8 +88,12 @@ export function AmbientSounds() {
     return () => {
       if (audioContextRef.current && soundNodesRef.current.length > 0) {
         soundNodesRef.current.forEach(({ oscillator, gainNode }) => {
-          gainNode.gain.exponentialRampToValueAtTime(0.001, audioContextRef.current.currentTime + 0.5);
-          oscillator.stop(audioContextRef.current.currentTime + 0.5);
+          try {
+            gainNode.gain.exponentialRampToValueAtTime(0.001, audioContextRef.current.currentTime + 0.5);
+            oscillator.stop(audioContextRef.current.currentTime + 0.5);
+          } catch (error) {
+            // Ignore errors for stopped oscillators
+          }
         });
       }
     };

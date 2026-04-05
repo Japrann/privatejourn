@@ -8,7 +8,7 @@ interface AmbientAtmosphereProps {
   currentMood?: string;
 }
 
-export function AmbientAtmosphere({ mode, currentMood }: AmbientAtmosphereProps) {
+export function AmbientAtmosphere({ mode = 'none', currentMood }: AmbientAtmosphereProps) {
   const [particles, setParticles] = useState<Array<{ id: number; x: number; y: number; size: number }>>([]);
   const [isClient, setIsClient] = useState(false);
 
@@ -19,7 +19,7 @@ export function AmbientAtmosphere({ mode, currentMood }: AmbientAtmosphereProps)
 
   // Add custom animation only on client
   useEffect(() => {
-    if (!isClient) return;
+    if (!isClient || typeof window === 'undefined') return;
     
     const style = document.createElement('style');
     style.textContent = `
